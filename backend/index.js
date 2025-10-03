@@ -2,11 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const admin = require('firebase-admin');
-
-// The SDK will automatically find and use the credentials from the
-// GOOGLE_APPLICATION_CREDENTIALS environment variable.
-admin.initializeApp();
 
 const app = express();
 app.use(cors());

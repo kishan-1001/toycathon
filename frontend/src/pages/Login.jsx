@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, Mail, Lock } from 'lucide-react';
 import Input from '../components/Input';
-import AuthButton, { GoogleIcon } from '../components/AuthButton';
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import AuthButton from '../components/AuthButton';
 import axios from 'axios';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { motion } from 'framer-motion';
@@ -47,20 +45,12 @@ const Login = ({ onNavigate }) => {
   const handleLogin = async () => {
     if (validate()) {
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const token = await userCredential.user.getIdToken();
-
-        const res = await axios.post('http://localhost:5000/api/auth/verifyToken', { token });
-        
+        const res = await axios.post('http://localhost:5000/api/auth/signin', { email, password });
         onNavigate('welcome', { user: res.data });
       } catch (error) {
         setErrors({ ...errors, general: 'Login failed. Please check your credentials.' });
       }
     }
-  };
-
-  const handleGoogleLogin = async () => {
-    // For now, we will disable this button
   };
 
   return (
@@ -108,19 +98,6 @@ const Login = ({ onNavigate }) => {
           <div className="mb-4">
             <AuthButton onClick={handleLogin}>Sign In</AuthButton>
           </div>
-
-          <div className="relative mb-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-purple-300/30"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-transparent text-purple-100">or</span>
-            </div>
-          </div>
-
-          <AuthButton variant="google" icon={GoogleIcon} onClick={handleGoogleLogin} disabled>
-            Continue with Google
-          </AuthButton>
 
           <div className="flex items-center justify-center gap-3 mt-6">
             <span className="text-purple-100 text-sm">New to SafeQuest?</span>

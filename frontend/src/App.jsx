@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Welcome from './pages/Welcome';
+import Chatbot from './components/Chatbot';
 import { AnimatePresence } from 'framer-motion';
 
 const App = () => {
@@ -20,7 +21,7 @@ const App = () => {
       case 'signup':
         return <Signup key="signup" onNavigate={handleNavigate} />;
       case 'welcome':
-        return <Welcome key="welcome" user={user} />;
+        return <Welcome key="welcome" user={user} onNavigate={handleNavigate} />;
       case 'login':
       default:
         return <Login key="login" onNavigate={handleNavigate} />;
@@ -32,6 +33,7 @@ const App = () => {
       <AnimatePresence mode="wait">
         {renderPage()}
       </AnimatePresence>
+      <Chatbot />
     </div>
   );
 };
