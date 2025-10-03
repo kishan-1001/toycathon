@@ -1,22 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const admin = require('firebase-admin');
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
+// Signup route
 router.post('/signup', async (req, res) => {
     try {
-        const { email, password, username } = req.body;
+        const { email, username, password } = req.body;
 
-        const userRecord = await admin.auth().createUser({
-            email,
-            password,
-            displayName: username,
-        });
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send({ error: 'User already exists' });
+        }
 
         const newUser = new User({
-            firebaseUid: userRecord.uid,
             email,
             username,
+            password,
         });
 
         await newUser.save();
@@ -27,21 +28,30 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/verifyToken', async (req, res) => {
+// Signin route
+router.post('/signin', async (req, res) => {
     try {
-        const { token } = req.body;
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        const uid = decodedToken.uid;
+        const { email, password } = req.body;
 
-        const user = await User.findOne({ firebaseUid: uid });
-
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).send({ error: 'User not found' });
+            return res.status(400).send({ error: 'Invalid email or password' });
         }
 
-        res.status(200).send(user);
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(400).send({ error: 'Invalid email or password' });
+        }
+
+        // For simplicity, returning user info without token
+        // You can add JWT token generation here if needed
+        res.status(200).send({
+            email: user.email,
+            username: user.username,
+            id: user._id,
+        });
     } catch (error) {
-        res.status(401).send({ error: 'Unauthorized' });
+        res.status(500).send({ error: 'Server error' });
     }
 });
 
