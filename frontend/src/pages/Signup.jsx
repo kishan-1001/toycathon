@@ -3,8 +3,30 @@ import { Shield, User, Mail, Lock } from 'lucide-react';
 import Input from '../components/Input';
 import AuthButton, { GoogleIcon } from '../components/AuthButton';
 import RoleSelector from '../components/RoleSelector';
-import firebase from '../firebase';
 import AnimatedBackground from '../components/AnimatedBackground';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    x: "100vw"
+  },
+  in: {
+    opacity: 1,
+    x: 0
+  },
+  out: {
+    opacity: 0,
+    x: "-100vw"
+  }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.5
+};
 
 const Signup = ({ onNavigate }) => {
   const [name, setName] = useState('');
@@ -34,30 +56,35 @@ const Signup = ({ onNavigate }) => {
   const handleSignup = async () => {
     if (validate()) {
       try {
-        await firebase.auth.createUserWithEmailAndPassword(email, password);
-        console.log('User data:', { name, username, role });
+        await axios.post('http://localhost:5000/api/auth/signup', {
+          email,
+          password,
+          username
+        });
         alert(`Account created successfully as ${role}! Welcome, ${name}! 🎉`);
+        onNavigate('login');
       } catch (error) {
-        setErrors({ ...errors, general: 'Signup failed. Please try again.' });
+        const errorMessage = error.response && error.response.data && error.response.data.error
+          ? error.response.data.error
+          : 'Signup failed. Please try again.';
+        setErrors({ ...errors, general: errorMessage });
       }
     }
   };
 
   const handleGoogleSignup = async () => {
-    if (!role) {
-      setErrors({ ...errors, role: 'Please select your role first' });
-      return;
-    }
-    try {
-      await firebase.auth.signInWithPopup();
-      alert(`Google signup successful as ${role}! 🎉`);
-    } catch (error) {
-      setErrors({ ...errors, general: 'Google signup failed.' });
-    }
+    // For now, we will disable this button
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4 relative">
+    <motion.div 
+      className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4 relative"
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <AnimatedBackground />
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20">
@@ -134,7 +161,7 @@ const Signup = ({ onNavigate }) => {
             </div>
           </div>
 
-          <AuthButton variant="google" icon={GoogleIcon} onClick={handleGoogleSignup}>
+          <AuthButton variant="google" icon={GoogleIcon} onClick={handleGoogleSignup} disabled>
             Continue with Google
           </AuthButton>
 
@@ -149,7 +176,7 @@ const Signup = ({ onNavigate }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,0 +1,35 @@
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const admin = require('firebase-admin');
+
+// The SDK will automatically find and use the credentials from the
+// GOOGLE_APPLICATION_CREDENTIALS environment variable.
+admin.initializeApp();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const PORT = process.env.PORT || 5000;
+
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+    console.log('MongoDB connected');
+}).catch(err => {
+    console.error(err);
+    process.exit(1);
+});
+
+app.use('/api/auth', require('./routes/auth'));
+
+app.get('/', (req, res) => {
+    res.send('Hello from the backend!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

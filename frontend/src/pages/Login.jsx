@@ -2,8 +2,32 @@ import React, { useState } from 'react';
 import { Shield, Mail, Lock } from 'lucide-react';
 import Input from '../components/Input';
 import AuthButton, { GoogleIcon } from '../components/AuthButton';
-import firebase from '../firebase';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import axios from 'axios';
 import AnimatedBackground from '../components/AnimatedBackground';
+import { motion } from 'framer-motion';
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    x: "-100vw"
+  },
+  in: {
+    opacity: 1,
+    x: 0
+  },
+  out: {
+    opacity: 0,
+    x: "100vw"
+  }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.1
+};
 
 const Login = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
@@ -23,8 +47,12 @@ const Login = ({ onNavigate }) => {
   const handleLogin = async () => {
     if (validate()) {
       try {
-        await firebase.auth.signInWithEmailAndPassword(email, password);
-        alert('Login successful! 🎉');
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const token = await userCredential.user.getIdToken();
+
+        const res = await axios.post('http://localhost:5000/api/auth/verifyToken', { token });
+        
+        onNavigate('welcome', { user: res.data });
       } catch (error) {
         setErrors({ ...errors, general: 'Login failed. Please check your credentials.' });
       }
@@ -32,16 +60,18 @@ const Login = ({ onNavigate }) => {
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      await firebase.auth.signInWithPopup();
-      alert('Google login successful! 🎉');
-    } catch (error) {
-      setErrors({ ...errors, general: 'Google login failed.' });
-    }
+    // For now, we will disable this button
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4 relative">
+    <motion.div 
+      className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4 relative"
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
+    >
       <AnimatedBackground />
       <div className="w-full max-w-md">
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20">
@@ -88,7 +118,7 @@ const Login = ({ onNavigate }) => {
             </div>
           </div>
 
-          <AuthButton variant="google" icon={GoogleIcon} onClick={handleGoogleLogin}>
+          <AuthButton variant="google" icon={GoogleIcon} onClick={handleGoogleLogin} disabled>
             Continue with Google
           </AuthButton>
 
@@ -103,7 +133,7 @@ const Login = ({ onNavigate }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
