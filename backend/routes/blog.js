@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
 
@@ -10,7 +11,7 @@ const requireAuth = (req, res, next) => {
     if (!req.body.userId && !req.headers.userid) {
         return res.status(401).json({ error: 'Authentication required' });
     }
-    req.userId = req.body.userId || req.headers.userid;
+    req.userId = mongoose.Types.ObjectId(req.body.userId || req.headers.userid);
     next();
 };
 

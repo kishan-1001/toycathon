@@ -1,21 +1,11 @@
-# Blog Feature Implementation - COMPLETED
+# Blog UI Enhancement Plan
 
-All tasks have been successfully implemented:
-
-- [x] Create backend/models/Blog.js model
-- [x] Create backend/routes/blog.js routes
-- [x] Update backend/index.js to include blog routes
-- [x] Create frontend/src/pages/Blog.jsx component with conditional form display
-- [x] Update frontend/src/App.jsx to add blog page routing
-- [x] Update frontend/src/components/AdventureDoors.jsx to handle blog navigation
-- [x] Update frontend/src/pages/Welcome.jsx to pass onNavigate to AdventureDoors
-
-**Key Features Implemented:**
-- Blog creation with title and content
-- Like/unlike functionality
-- Comment system
-- User authentication for actions
-- Responsive UI with animations
-- "Write Your Blog" button that toggles the form interface
-- Display of existing blogs when available
-- Navigation back to welcome page
+- [ ] Import AnimatedBackground component
+- [ ] Add AnimatedBackground to the page
+- [ ] Add profile dropdown in top-right corner
+- [ ] Add animated back button
+- [ ] Add floating animated icons (Sparkles, PenTool, BookOpen, Users)
+- [ ] Implement animated blog creation form with toggle
+- [ ] Create animated blog list with stagger effects and hover animations
+- [ ] Add animated comment sections for each blog
+- [ ] Add smooth transitions for all interactions
