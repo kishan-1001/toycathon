@@ -1,18 +1,21 @@
-# TODO: Modify Project to Use MongoDB for Signup and Signin
+# Blog Feature Implementation - COMPLETED
 
-## Backend Changes
-- [x] Add bcrypt dependency to backend/package.json
-- [x] Install new dependencies
-- [x] Modify backend/models/User.js: Add password field and hashing methods
-- [x] Update backend/routes/auth.js: Remove Firebase usage, implement signup and signin routes with MongoDB
-- [x] Update backend/index.js: Remove Firebase admin initialization
+All tasks have been successfully implemented:
 
-## Frontend Changes
-- [x] Create frontend/src/pages/Signup.jsx: Implement signup page with API call to backend
-- [x] Update frontend/src/pages/Login.jsx: Remove Firebase auth, use API call for signin
-- [ ] Remove Firebase dependency from frontend/package.json if no longer needed
+- [x] Create backend/models/Blog.js model
+- [x] Create backend/routes/blog.js routes
+- [x] Update backend/index.js to include blog routes
+- [x] Create frontend/src/pages/Blog.jsx component with conditional form display
+- [x] Update frontend/src/App.jsx to add blog page routing
+- [x] Update frontend/src/components/AdventureDoors.jsx to handle blog navigation
+- [x] Update frontend/src/pages/Welcome.jsx to pass onNavigate to AdventureDoors
 
-## Testing
-- [ ] Test signup functionality
-- [ ] Test signin functionality
-- [ ] Verify MongoDB user storage
+**Key Features Implemented:**
+- Blog creation with title and content
+- Like/unlike functionality
+- Comment system
+- User authentication for actions
+- Responsive UI with animations
+- "Write Your Blog" button that toggles the form interface
+- Display of existing blogs when available
+- Navigation back to welcome page

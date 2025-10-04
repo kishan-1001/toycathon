@@ -173,7 +173,7 @@ const Welcome = ({ user, onNavigate }) => {
 
       <div className="text-center text-white relative z-10 mt-16">
         {/* Doors Section */}
-        <AdventureDoors />
+        <AdventureDoors onNavigate={onNavigate} />
       </div>
     </div>
   );

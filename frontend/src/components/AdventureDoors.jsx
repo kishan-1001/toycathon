@@ -141,7 +141,7 @@ function Character({ index, isKicking, setIsKicking }) {
 }
 
 // Door component
-function Door({ title, index }) {
+function Door({ title, index, onNavigate }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isKicking, setIsKicking] = React.useState(false);
 
@@ -151,7 +151,12 @@ function Door({ title, index }) {
     }
     setTimeout(() => {
       setIsOpen(true);
-      setTimeout(() => setIsOpen(false), 2600);
+      setTimeout(() => {
+        setIsOpen(false);
+        if (index === 2) {
+          onNavigate('blog');
+        }
+      }, 2600);
     }, 400);
   };
 
@@ -179,12 +184,12 @@ function Door({ title, index }) {
   );
 }
 
-const AdventureDoors = () => {
+const AdventureDoors = ({ onNavigate }) => {
   return (
     <div className="container">
-      <Door title="START ADVENTURE" index={0} />
-      <Door title="CONTINUE ADVENTURE" index={1} />
-      <Door title="BLOG" index={2} />
+      <Door title="START ADVENTURE" index={0} onNavigate={onNavigate} />
+      <Door title="CONTINUE ADVENTURE" index={1} onNavigate={onNavigate} />
+      <Door title="BLOG" index={2} onNavigate={onNavigate} />
     </div>
   );
 };
