@@ -456,7 +456,7 @@ const Blog = ({ user, onNavigate }) => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: commentIndex * 0.1 }}
                       >
-                        <p className="text-white/90">{comment.text}</p>
+                        <p className="text-white/90"><span className="font-semibold">{comment.user.username}:</span> {comment.text}</p>
                         <span className="text-white/60 text-xs">
                           {new Date(comment.date).toLocaleDateString()}
                         </span>

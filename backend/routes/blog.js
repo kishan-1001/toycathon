@@ -50,11 +50,11 @@ router.post('/:id/like', requireAuth, async (req, res) => {
             return res.status(404).json({ error: 'Blog not found' });
         }
         const userId = req.userId;
-        const likeIndex = blog.likes.indexOf(userId);
-        if (likeIndex > -1) {
-            blog.likes.splice(likeIndex, 1); // Unlike
+        const isLiked = blog.likes.some(like => like.equals(userId));
+        if (isLiked) {
+            blog.likes = blog.likes.filter(like => !like.equals(userId));
         } else {
-            blog.likes.push(userId); // Like
+            blog.likes.push(userId);
         }
         await blog.save();
         await blog.populate('likes', 'username');
@@ -77,7 +77,6 @@ router.post('/:id/comment', requireAuth, async (req, res) => {
             text,
         });
         await blog.save();
-        await blog.populate('comments.user', 'username');
         res.json(blog);
     } catch (error) {
         res.status(500).json({ error: error.message });
