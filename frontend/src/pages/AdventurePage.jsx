@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 
 const AdventurePage = ({ onNavigate }) => {
   const [showTitle, setShowTitle] = useState(true);
+  const [hovered, setHovered] = useState(Array(7).fill(false));
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,43 +57,58 @@ const AdventurePage = ({ onNavigate }) => {
       )}
 
       {/* Clash of Clans Style Island Images with 3D Effect */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
+      <div className="absolute inset-0 z-10">
         {Array.from({ length: 7 }, (_, i) => {
           const row = Math.floor(i / 4);
           const col = i % 4;
           const leftPositions = row % 2 === 0 ? ['5%', '30%', '55%', '80%'] : ['15%', '40%', '65%'];
+          const topics = ['Space Adventure', 'Animal Friends', 'Sports Hero', 'Tech Wizard', 'Creative Artist', 'Nature Explorer', 'Space Adventure'];
           return (
-            <motion.img
-              key={i}
-              src="/Screenshot_2025-10-05_225215-removebg-preview.png"
-              alt="Island"
-            className="absolute w-80 h-64 object-contain"
-              style={{
-                left: leftPositions[col],
-                top: row === 0 ? '20%' : '60%',
-                transformStyle: 'preserve-3d',
-              }}
-              initial={{ opacity: 0, scale: 0.5, rotateY: 0 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                rotateY: [0, 15, -15, 0],
-              }}
-              transition={{
-                duration: 2,
-                delay: i * 0.1,
-                rotateY: {
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                },
-              }}
-              whileHover={{
-                scale: 1.2,
-                rotateY: 20,
-                transition: { duration: 0.3 },
-              }}
-            />
+            <div key={i} className="absolute" style={{ left: leftPositions[col], top: row === 0 ? '20%' : '60%' }}>
+              <motion.img
+                src="/Screenshot_2025-10-05_225215-removebg-preview.png"
+                alt="Island"
+                className="w-80 h-64 object-contain"
+                style={{
+                  transformStyle: 'preserve-3d',
+                }}
+                initial={{ opacity: 0, scale: 0.5, rotateY: 0 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  rotateY: [0, 15, -15, 0],
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  delay: i * 0.1,
+                  rotateY: {
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  },
+                  y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  },
+                }}
+                whileHover={{
+                  scale: 1.2,
+                  rotateY: 20,
+                  transition: { duration: 0.3 },
+                }}
+                onMouseEnter={() => setHovered(prev => prev.map((h, idx) => idx === i ? true : h))}
+                onMouseLeave={() => setHovered(prev => prev.map((h, idx) => idx === i ? false : h))}
+              />
+              <motion.div
+                className="text-center text-yellow-300/70 font-serif text-lg "
+                animate={{ opacity: hovered[i] ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {topics[i]}
+              </motion.div>
+            </div>
           );
         })}
       </div>
