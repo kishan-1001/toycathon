@@ -7,17 +7,8 @@ import { User, Edit, Upload, LogOut, Settings, BookOpen, Trophy, Bell, Moon, Sun
 const Welcome = ({ user, onNavigate }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [isEditingUsername, setIsEditingUsername] = useState(false);
-  const [username, setUsername] = useState(user.username);
-  const [theme, setTheme] = useState('light');
+  const username = user.username;
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -28,14 +19,7 @@ const Welcome = ({ user, onNavigate }) => {
     }
   };
 
-  const handleUsernameEdit = () => {
-    setIsEditingUsername(!isEditingUsername);
-  };
 
-  const handleUsernameSave = () => {
-    setIsEditingUsername(false);
-    // Here you could save to backend if needed
-  };
 
   const handleLogout = () => {
     onNavigate('login');
@@ -100,35 +84,7 @@ const Welcome = ({ user, onNavigate }) => {
 
             {/* Username Section */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-              <div className="flex items-center gap-2">
-                {isEditingUsername ? (
-                  <>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                    <button
-                      onClick={handleUsernameSave}
-                      className="px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                    >
-                      Save
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 text-gray-900">{username}</span>
-                    <button
-                      onClick={handleUsernameEdit}
-                      className="p-1 text-gray-500 hover:text-indigo-600 transition-colors"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  </>
-                )}
-              </div>
+              <p className="text-sm text-gray-700"><span className="font-medium">Username:</span> {username}</p>
             </div>
 
             {/* Email and Role */}
@@ -139,7 +95,7 @@ const Welcome = ({ user, onNavigate }) => {
 
             {/* Options */}
             <div className="space-y-2 mb-4">
-              <button onClick={() => handleOptionClick('Account Settings')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+              <button onClick={() => onNavigate('settings')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
                 <Settings className="w-4 h-4" /> Account Settings
               </button>
               <button onClick={() => handleOptionClick('My Adventures')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
@@ -151,9 +107,7 @@ const Welcome = ({ user, onNavigate }) => {
               <button onClick={() => handleOptionClick('Notifications')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
                 <Bell className="w-4 h-4" /> Notifications
               </button>
-              <button onClick={toggleTheme} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />} Theme Toggle
-              </button>
+              {/* Removed theme toggle from dropdown */}
               <button onClick={() => handleOptionClick('Help & Support')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
                 <HelpCircle className="w-4 h-4" /> Help & Support
               </button>

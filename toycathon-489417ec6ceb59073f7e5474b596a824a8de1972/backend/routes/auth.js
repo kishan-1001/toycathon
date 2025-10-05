@@ -58,4 +58,38 @@ router.post('/signin', async (req, res) => {
     }
 });
 
+// Update user settings route
+router.put('/update', async (req, res) => {
+    try {
+        const { id, privacy, username } = req.body;
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        if (privacy !== undefined) {
+            user.privacy = privacy;
+        }
+        if (username !== undefined && username.trim() !== '') {
+            user.username = username.trim();
+        }
+
+        await user.save();
+
+        res.status(200).send({
+            message: 'User updated successfully',
+            user: {
+                email: user.email,
+                username: user.username,
+                id: user._id,
+                role: user.role,
+                privacy: user.privacy,
+            }
+        });
+    } catch (error) {
+        res.status(500).send({ error: 'Server error' });
+    }
+});
+
 module.exports = router;
