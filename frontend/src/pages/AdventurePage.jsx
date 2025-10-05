@@ -54,6 +54,48 @@ const AdventurePage = ({ onNavigate }) => {
           </motion.h1>
         </div>
       )}
+
+      {/* Clash of Clans Style Island Images with 3D Effect */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        {Array.from({ length: 7 }, (_, i) => {
+          const row = Math.floor(i / 4);
+          const col = i % 4;
+          const leftPositions = row % 2 === 0 ? ['5%', '30%', '55%', '80%'] : ['15%', '40%', '65%'];
+          return (
+            <motion.img
+              key={i}
+              src="/Screenshot_2025-10-05_225215-removebg-preview.png"
+              alt="Island"
+            className="absolute w-80 h-64 object-contain"
+              style={{
+                left: leftPositions[col],
+                top: row === 0 ? '20%' : '60%',
+                transformStyle: 'preserve-3d',
+              }}
+              initial={{ opacity: 0, scale: 0.5, rotateY: 0 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                rotateY: [0, 15, -15, 0],
+              }}
+              transition={{
+                duration: 2,
+                delay: i * 0.1,
+                rotateY: {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
+              }}
+              whileHover={{
+                scale: 1.2,
+                rotateY: 20,
+                transition: { duration: 0.3 },
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
