@@ -3,23 +3,17 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 // Character component using GLTF model
-function Character({ index, isKicking, setIsKicking }) {
+function Character({ modelUrl, isKicking, setIsKicking }) {
   const groupRef = useRef();
-  const model = useLoader(GLTFLoader, 'https://models.readyplayer.me/68e253b39f7e763dcea3fa50.glb');
+  const model = useLoader(GLTFLoader, modelUrl);
   const kickStartTimeRef = useRef(0);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    if (index === 1) {
-      // Waiting animation: simple up and down
-      groupRef.current.position.y = -0.7 + Math.sin(time * 2) * 0.05;
-      groupRef.current.rotation.y = Math.sin(time * 0.5) * 0.1;
-    } else if (index === 2) {
-      // Reading animation: slight bobbing
-      groupRef.current.position.y = -0.7 + Math.sin(time) * 0.03;
-      groupRef.current.rotation.x = -0.1;
-    }
+    // Waiting animation: simple up and down
+    groupRef.current.position.y = -0.7 + Math.sin(time * 2) * 0.05;
+    // Face front, no side rotation
 
     // Kick animation if triggered
     if (isKicking) {
@@ -48,13 +42,13 @@ function Character({ index, isKicking, setIsKicking }) {
 
   return (
     <group ref={groupRef} position={[0, 0, 0]} dispose={null}>
-      <primitive object={model.scene.clone(true)} scale={3.75} />
+      <primitive object={model.scene.clone(true)} scale={3.75} position={[0, -1, 0]} rotation={[0, Math.PI, 0]} />
     </group>
   );
 }
 
 // Door component
-function Door({ title, index, onNavigate }) {
+function Door({ title, index, onNavigate, avatarModel }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isKicking, setIsKicking] = React.useState(false);
 
@@ -85,14 +79,14 @@ function Door({ title, index, onNavigate }) {
         </div>
         <div className="avatar-container">
           <Canvas
-            camera={{ position: [0, 0, 5], fov: 60 }}
+            camera={{ position: [0, 0, 8], fov: 50 }}
             style={{ width: '100%', height: '100%' }}
           >
             <ambientLight intensity={0.7} />
             <directionalLight position={[5, 10, 5]} intensity={0.8} />
             <directionalLight position={[-5, 5, -5]} intensity={0.4} />
             <Suspense fallback={<mesh><boxGeometry args={[1,1,1]} /><meshStandardMaterial color="red" /></mesh>}>
-              <Character index={index} isKicking={isKicking} setIsKicking={setIsKicking} />
+              <Character modelUrl={avatarModel} isKicking={isKicking} setIsKicking={setIsKicking} />
             </Suspense>
           </Canvas>
         </div>
@@ -101,12 +95,22 @@ function Door({ title, index, onNavigate }) {
   );
 }
 
-const AdventureDoors = ({ onNavigate }) => {
+const AdventureDoors = ({ onNavigate, userAvatar }) => {
+  // Map avatar id to model path
+  const avatarModelMap = {
+    boy1: '/adorable_cartoon-like_boy_with_blue_hair_and_ex.glb',
+    girl1: '/cartoon_girl_bust.glb',
+    boy2: '/jogador__player_-_cartoon_boy_-_toscoman_3d.glb',
+    girl2: '/shadow_boxing_girl.glb',
+  };
+
+  const avatarModel = avatarModelMap[userAvatar] || '/adorable_cartoon-like_boy_with_blue_hair_and_ex.glb';
+
   return (
     <div className="container">
-      <Door title="START ADVENTURE" index={0} onNavigate={onNavigate} />
-      <Door title="CONTINUE ADVENTURE" index={1} onNavigate={onNavigate} />
-      <Door title="BLOG" index={2} onNavigate={onNavigate} />
+      <Door title="START ADVENTURE" index={0} onNavigate={onNavigate} avatarModel={avatarModel} />
+      <Door title="CONTINUE ADVENTURE" index={1} onNavigate={onNavigate} avatarModel={avatarModel} />
+      <Door title="BLOG" index={2} onNavigate={onNavigate} avatarModel={avatarModel} />
     </div>
   );
 };

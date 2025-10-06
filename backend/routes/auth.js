@@ -23,7 +23,18 @@ router.post('/signup', async (req, res) => {
 
         await newUser.save();
 
-        res.status(201).send({ message: 'User created successfully' });
+        res.status(201).send({
+            message: 'User created successfully',
+            user: {
+                id: newUser._id,
+                email: newUser.email,
+                username: newUser.username,
+                role: newUser.role,
+                avatar: newUser.avatar,
+                profilePicture: newUser.profilePicture,
+            },
+            isNewUser: true,
+        });
     } catch (error) {
         res.status(400).send({ error: error.message });
     }
@@ -52,6 +63,8 @@ router.post('/signin', async (req, res) => {
             id: user._id,
             role: user.role,
             privacy: user.privacy,
+            avatar: user.avatar,
+            profilePicture: user.profilePicture,
         });
     } catch (error) {
         res.status(500).send({ error: 'Server error' });
@@ -86,6 +99,48 @@ router.put('/update', async (req, res) => {
                 role: user.role,
                 privacy: user.privacy,
             }
+        });
+    } catch (error) {
+        res.status(500).send({ error: 'Server error' });
+    }
+});
+
+router.put('/update-avatar', async (req, res) => {
+    try {
+        const { id, avatar } = req.body;
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        user.avatar = avatar;
+        await user.save();
+
+        res.status(200).send({
+            message: 'Avatar updated successfully',
+            avatar: user.avatar,
+        });
+    } catch (error) {
+        res.status(500).send({ error: 'Server error' });
+    }
+});
+
+router.put('/update-profile-picture', async (req, res) => {
+    try {
+        const { id, profilePicture } = req.body;
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        user.profilePicture = profilePicture;
+        await user.save();
+
+        res.status(200).send({
+            message: 'Profile picture updated successfully',
+            profilePicture: user.profilePicture,
         });
     } catch (error) {
         res.status(500).send({ error: 'Server error' });

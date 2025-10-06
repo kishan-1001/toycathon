@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import AvatarSelection from './pages/AvatarSelection';
 import Welcome from './pages/Welcome';
 import Blog from './pages/Blog';
 import Settings from './pages/Settings';
@@ -35,8 +36,10 @@ const App = () => {
     switch (currentPage) {
       case 'signup':
         return <Signup key="signup" onNavigate={handleNavigate} />;
+      case 'avatar-selection':
+        return <AvatarSelection key="avatar-selection" user={user} onNavigate={handleNavigate} />;
       case 'welcome':
-        return <Welcome key="welcome" user={user} onNavigate={handleNavigate} theme={theme} setTheme={setTheme} />;
+        return <Welcome key="welcome" user={user} onNavigate={handleNavigate} setUser={setUser} theme={theme} setTheme={setTheme} />;
       case 'settings':
         return <Settings key="settings" user={user} setUser={setUser} onNavigate={handleNavigate} theme={theme} setTheme={setTheme} />;
       case 'blog':

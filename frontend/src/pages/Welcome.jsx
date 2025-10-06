@@ -3,18 +3,31 @@ import AnimatedBackground from '../components/AnimatedBackground';
 import AdventureDoors from '../components/AdventureDoors';
 import { motion } from 'framer-motion';
 import { User, Edit, Upload, LogOut, Settings, BookOpen, Trophy, Bell, Moon, Sun, HelpCircle } from 'lucide-react';
+import axios from 'axios';
 
-const Welcome = ({ user, onNavigate }) => {
+
+
+const Welcome = ({ user, onNavigate, setUser }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
   const username = user.username;
 
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => setProfileImage(e.target.result);
+      reader.onload = async (e) => {
+        const base64 = e.target.result;
+        try {
+          await axios.put('http://localhost:5000/api/auth/update-profile-picture', {
+            id: user.id,
+            profilePicture: base64,
+          });
+          setUser({ ...user, profilePicture: base64 });
+        } catch (error) {
+          alert('Error uploading profile picture: ' + error.message);
+        }
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -51,8 +64,8 @@ const Welcome = ({ user, onNavigate }) => {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors"
           >
-            {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" />
+            {user.profilePicture ? (
+              <img src={user.profilePicture} alt="Profile" className="w-full h-full rounded-full object-cover" />
             ) : (
               <User className="w-6 h-6 text-white" />
             )}
@@ -68,8 +81,8 @@ const Welcome = ({ user, onNavigate }) => {
             {/* Profile Image Section */}
             <div className="flex flex-col items-center mb-4">
               <div className="relative">
-                {profileImage ? (
-                  <img src={profileImage} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-indigo-300" />
+                {user.profilePicture ? (
+                  <img src={user.profilePicture} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-indigo-300" />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-indigo-300">
                     <User className="w-8 h-8 text-indigo-600" />
@@ -97,6 +110,9 @@ const Welcome = ({ user, onNavigate }) => {
             <div className="space-y-2 mb-4">
               <button onClick={() => onNavigate('settings')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
                 <Settings className="w-4 h-4" /> Account Settings
+              </button>
+              <button onClick={() => onNavigate('avatar-selection')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+                <User className="w-4 h-4" /> Change Avatar
               </button>
               <button onClick={() => handleOptionClick('My Adventures')} className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
                 <BookOpen className="w-4 h-4" /> My Adventures
@@ -127,7 +143,7 @@ const Welcome = ({ user, onNavigate }) => {
 
       <div className="text-center text-white relative z-10 mt-16">
         {/* Doors Section */}
-        <AdventureDoors onNavigate={onNavigate} />
+        <AdventureDoors onNavigate={onNavigate} userAvatar={user.avatar} />
       </div>
     </div>
   );

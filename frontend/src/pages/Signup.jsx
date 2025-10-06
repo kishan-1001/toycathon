@@ -47,8 +47,12 @@ const Signup = ({ onNavigate }) => {
   const handleSignup = async () => {
     if (validate()) {
       try {
-        await axios.post('http://localhost:5000/api/auth/signup', { email, username, password });
-        onNavigate('login');
+        const response = await axios.post('http://localhost:5000/api/auth/signup', { email, username, password });
+        if (response.data.isNewUser) {
+          onNavigate('avatar-selection', { user: response.data.user });
+        } else {
+          onNavigate('login');
+        }
       } catch (error) {
         setErrors({ ...errors, general: error.response?.data?.error || 'Signup failed' });
       }

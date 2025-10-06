@@ -25,6 +25,14 @@ const UserSchema = new mongoose.Schema({
         enum: ['public', 'private'],
         default: 'private',
     },
+    avatar: {
+        type: String,
+        default: null,
+    },
+    profilePicture: {
+        type: String,
+        default: null,
+    },
 });
 
 // Hash password before saving
